@@ -2,9 +2,11 @@ import '../style.css'
 
 const buttons = document.querySelector<HTMLDivElement>(".letter-btns");
 const outputField = document.querySelector<HTMLDivElement>(".ausgabe");
-// const outputTrys = document.querySelector<HTMLDivElement>(".versuche");
-
+const outputTrys = document.querySelector<HTMLDivElement>(".versuche")!;
+const firework = document.querySelectorAll<HTMLDivElement>(".firework")!;
+const reset = document.querySelector<HTMLButtonElement>(".reset")!;
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÜÖ";
+let count: number = 10;
 
 const words = [
     "Abendmahl",
@@ -18,121 +20,109 @@ const words = [
     "Glücksmoment", "Kreativchaos", "Herzschmerz", "Abenteuerlust", "Ruhepol", "Hoffnungsschimmer"
   ];
 
-
+  const fullWord: string[] = [];
   // Erzeugen eines zufälligen Wortes aus dem Array "words"
   const randomNumber = Math.floor(Math.random()*words.length);
   const randomWord: string = words[randomNumber].toUpperCase();
-
- console.log(randomWord);
- 
-
- // string -> "Gedankenkarussel" gib mir _
-
-// funktion die die Wortlänge vom "randomWord" nimmt und als platzhalter 
-  //  ausgibt 
+let wordlength: number = randomWord.length; 
 
 
- function ausgabeOne(){
+ // Funktion zum Erstellen der Platzhalter
+function createOutputFields() {
+    outputField!.innerHTML = "";
+    for (let i = 0; i < randomWord.length; i++) {
+        const buchstabe = randomWord[i];
+        if (buchstabe === " ") {
+            outputField!.innerHTML += `<p class="space"> </p>`;  // Falls Wort Leerzeichen enthält
+        } else {
+            outputField!.innerHTML += `<p class="item-${i}">__</p>`;
+        }
+       
+    }
+}
 
-    // Erzeugt dynamisches Ausgabefeld
-    for (const buchstabe of randomWord) {
-      
-    if(outputField){
-        outputField.innerHTML += `<p class="item-${buchstabe.toUpperCase()}">__</p>`;
+// Funktion zum Erstellen der Buchstaben-Buttons
+function createLetterButtons() {
+    buttons!.innerHTML = "";
+    for (const buchstabe of alphabet) {
+        buttons!.innerHTML += `<button class="letter-btn" id="${buchstabe}">${buchstabe}</button>`;
     }
 
- }
+    reset.addEventListener('click', ()=> history.go(0));
+}
 
-// Buttons erzeugt mit den Buchstaben
-for (const buchstabe of alphabet) {
-  
-    if (buttons) {
-  
-      
-  
-       buttons.innerHTML += `<button class="letter-btn" id="${buchstabe}">${buchstabe}</button>`;
-  
-    }
-  }
-
-
-
-  
-    const allLetterBtns = document.querySelectorAll(".letter-btn") as NodeListOf<HTMLButtonElement>;
-   
-    allLetterBtns.forEach( (letterBtn) =>{
-      
-        
-        letterBtn.addEventListener('click',()=>{
-
+// Event-Listener für Buchstaben-Buttons hinzufügen
+function setupButtonListeners() {
+    const allLetterBtns = document.querySelectorAll<HTMLButtonElement>(".letter-btn");
+    outputTrys.innerHTML= count + " Versuche";
+    allLetterBtns.forEach(letterBtn => {
+        letterBtn.addEventListener('click', () => {
+            let knopf: string = letterBtn.id.toUpperCase();
             
-            let knopf: string = letterBtn.id.toUpperCase();;
-         
-            const zugriff = document.querySelector(`.item-${knopf}`)!;
-            if(randomWord.includes(knopf)){
+            if (randomWord.includes(knopf)) {
+                letterBtn.style.backgroundColor = "green";
                
-               letterBtn.style.backgroundColor="green"
+                // Alle Vorkommen finden und ersetzen
+                for (let i = 0; i < randomWord.length; i++) {
+                    if (randomWord[i] === knopf) {
+                        const element = document.querySelector(`.item-${i}`);
+                        if (element) {
+                            element.innerHTML = knopf;
+                            fullWord.push(knopf);
+                            wordlength--;
+                        }
+                    }
+                }
+                    
+                    
+                 if(wordlength <= 0){
+                    
+                   for(const red of allLetterBtns){
+                        
+                        red.style.visibility = "hidden";
+                       
+                   }
 
-    //            const guessedLetters: string[] = Array(randomWord.length).fill("__");
-    //            let letterFound = false;
+                  for(let e of firework) e.style.display ="inline";
+                    
+                    
+                 }
                 
-
-
-
-
-    //                // Überprüfe jeden Buchstaben im zufälligen Wort
-    //   for (let i = 0; i < randomWord.length; i++) {
-    //     if (randomWord[i] === knopf) {
-    //       guessedLetters[i] = randomWord[i]; // Aktualisiere das Array mit dem erratenen Buchstaben
-    //       letterFound = true;
-    //     }
-    //   }
-
-    //   // Aktualisiere das Ausgabefeld
-    //   if (zugriff) {
-    //     zugriff.innerHTML = guessedLetters
-    //       .map((knopf) => `<p>${knopf}</p>`)
-    //       .join("");
-    //   }
-
-
-
-
-
-
-
-
-
-
-
-                let count =   randomWord.match(knopf)?.length!;
-
-                console.log(count);
+                   
+                    
+            } else {
+                letterBtn.style.backgroundColor = "red";
+                count--;
                 
-                
+                outputTrys.innerHTML= count + " Versuche";
             
-               zugriff.innerHTML = knopf;
-              
-    
-                
-            }else{
-             letterBtn.style.backgroundColor="red"
+
+                if(count < 0){
+                    alert("Sry, Leider alle versuche aufgebraucht!🖕")
+                    history.go(0);
+                }
                 
             }
-            
-
         });
-            
-
-        } )
-
+    });
+}
 
 
 
-     
-    }
+// Initialisierung
+function startGame() {
+    
+    createOutputFields();
+    createLetterButtons();
+    setupButtonListeners();
 
- ausgabeOne();
+  
+
+
+}
+
+startGame();
+
 
 
 
