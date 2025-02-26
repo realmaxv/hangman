@@ -5,6 +5,9 @@ const outputField = document.querySelector<HTMLDivElement>(".ausgabe");
 const outputTrys = document.querySelector<HTMLDivElement>(".versuche")!;
 const firework = document.querySelectorAll<HTMLDivElement>(".firework")!;
 const reset = document.querySelector<HTMLButtonElement>(".reset")!;
+
+
+
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÜÖ";
 let count: number = 10;
 
@@ -110,7 +113,7 @@ function setupButtonListeners() {
 
 
 // Initialisierung
-function startGame() {
+export function startGame() {
     
     createOutputFields();
     createLetterButtons();
