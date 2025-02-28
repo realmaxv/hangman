@@ -214,7 +214,7 @@ function endSequence(){
                   videoende.load();
                  videoende.play();
                   videoende.addEventListener("ended", ()=>{
-                    location.reload(true);
+                    location.reload();
                   })
                    
 
