@@ -1,10 +1,11 @@
 import '../style.css'
 
-const buttons = document.querySelector<HTMLDivElement>(".letter-btns");
+const buttons = document.querySelector<HTMLDivElement>(".letter-btns")!;
 const outputField = document.querySelector<HTMLDivElement>(".ausgabe");
 const outputTrys = document.querySelector<HTMLDivElement>(".versuche")!;
 const firework = document.querySelectorAll<HTMLDivElement>(".firework")!;
 const reset = document.querySelector<HTMLButtonElement>(".reset")!;
+const wrapper = document.querySelector<HTMLDivElement>(".wrapper")!;
 
 
 
@@ -100,9 +101,8 @@ function setupButtonListeners() {
                 outputTrys.innerHTML= count + " Versuche";
             
 
-                if(count < 0){
-                    alert("Sry, Leider alle versuche aufgebraucht!🖕")
-                    history.go(0);
+                if(count <= 0){
+                  endSequence();
                 }
                 
             }
@@ -126,6 +126,7 @@ export function startGame() {
 
 startGame();
 
+console.log();
 
 
 
@@ -201,4 +202,20 @@ startGame();
 
 
 
+function endSequence(){
 
+    
+    buttons.style.display = "none";
+    wrapper.style.display = "none";
+    const videoende=  document.getElementById("myVideo") as HTMLVideoElement;
+                  videoende.setAttribute('src', './src/assets/videos/lost.mp4');
+                  videoende.removeAttribute('muted');
+                
+                  videoende.load();
+                 videoende.play();
+                  videoende.addEventListener("ended", ()=>{
+                    location.reload(true);
+                  })
+                   
+
+}
